@@ -1,7 +1,7 @@
 # PWM-Dimmer
 
 ### (My) Use Case
-I run this code on Elegoo Nano along with some help from a Raspberry Pi (See my enviro-manager repo). The Raspberry Pi takes in terrarium environment data and uses it to control relays to enable/disable a heat lamp, heat mat, and fogger. When the lamp or the mat is enabled, the Raspberry Pi sends a serial signal to this code in order to control the amount of power sent to the lamp and/or the mat, facillitating proportional heat control.
+I run this code on Elegoo Nano along with some help from a Raspberry Pi (See my [enviro-manager](https://github.com/mkwarman/enviro-manager) repo). The Raspberry Pi takes in terrarium environment data and uses it to control relays to enable/disable a heat lamp, heat mat, and fogger. When the lamp or the mat is enabled, the Raspberry Pi sends a serial signal to this code in order to control the amount of power sent to the lamp and/or the mat, facillitating proportional heat control.
 
 ### Setup Info
 This code is designed to run on an Arduino Nano or similar ATmega328 hardware. It is designed to control two seperate AC 120 volt 60Hz TRIAC dimmers with zero-cross detection via PWM. Since these two dimmers are on the same AC source, only one zero-cross signal input is used.
@@ -15,7 +15,7 @@ This code is designed to run on an Arduino Nano or similar ATmega328 hardware. I
 The code will listen for a serial string starting with a letter followed by three numbers. The letter must be either `L`, `M`, or `Z`. If you want, you can change this in the "For serial read target value detection" of the code. I choose "L" for "Light" and "M" for "Mat" since that matches my use case.:
 * `L` refers to PWM signal to dimmer 1
 * `M` refers to PWM signal to dimmer 2
-* `Z` sets the delay to be used before acting on a zero cross signal. This is helpful because many zero-cross detection circuits fire a zero-cross event when the voltage is near zero, rather than when it actually crosses it. Having a small delay will allow you to manually tune how long to wait until actually opening the gate a true zero, though you will proabbly need an oscilloscope to accurately determine this.
+* `Z` sets the delay to be used before acting on a zero cross signal. This is helpful because many zero-cross detection circuits fire a zero-cross event when the voltage is near zero, rather than when it actually crosses it. Having a small delay will allow you to manually tune how long to wait until actually opening the gate a true zero, though you will probably need an oscilloscope to accurately determine this.
 
 The three numbers which follow the letter are to represent a value between 010 and 490. The larger the value, the greater the delay before a signal gate opens, and consequently the lower the duty cycle of the channel. 010 is very close to always on, and 490 is very close to always off. Numbers outside this range can result in some weird behavior, but you may have to adjust them for your hardware. These are the values that seem to work best for me.
 
