@@ -19,15 +19,12 @@ int zero_cross_delay = 450;
 // Zero Cross Detection
 void zeroCrossInterrupt()
 {
+  // Turn off TRIAC gates
   digitalWrite(LIGHT_DIMMER_PWM, LOW);
   digitalWrite(MAT_DIMMER_PWM, LOW);
   
   // Compensate for early zero cross detection
   delayMicroseconds(zero_cross_delay);
-
-  // turn on TRIAC gates
-  //digitalWrite(LIGHT_DIMMER_PWM, LOW);
-  //digitalWrite(MAT_DIMMER_PWM, LOW);
 
   // Start timer with divide by 256 input
   TCCR1B=0x04;
@@ -71,20 +68,12 @@ void setup()
 ISR(TIMER1_COMPA_vect){
   // Set TRIAC gate to high
    digitalWrite(LIGHT_DIMMER_PWM, HIGH);
-   // Delay for TRIAC
-   //delayMicroseconds(20);
-   // Set TRIAC gate to low
-   //digitalWrite(LIGHT_DIMMER_PWM, LOW);
 }
 
 // Comparator match B - mat dimmer
 ISR(TIMER1_COMPB_vect){
   // Set TRIAC gate to high
   digitalWrite(MAT_DIMMER_PWM, HIGH);
-  // Delay for TRIAC
-  //delayMicroseconds(20);
-  // Set TRIAC gate to low
-  //digitalWrite(MAT_DIMMER_PWM, LOW);
 }
 
 // Read three digit serial signal, return parsed int
