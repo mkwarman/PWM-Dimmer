@@ -1,3 +1,5 @@
+
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -17,12 +19,15 @@ int zero_cross_delay = 450;
 // Zero Cross Detection
 void zeroCrossInterrupt()
 {
+  digitalWrite(LIGHT_DIMMER_PWM, LOW);
+  digitalWrite(MAT_DIMMER_PWM, LOW);
+  
   // Compensate for early zero cross detection
   delayMicroseconds(zero_cross_delay);
 
   // turn on TRIAC gates
-  digitalWrite(LIGHT_DIMMER_PWM, HIGH);
-  digitalWrite(MAT_DIMMER_PWM, HIGH);
+  //digitalWrite(LIGHT_DIMMER_PWM, LOW);
+  //digitalWrite(MAT_DIMMER_PWM, LOW);
 
   // Start timer with divide by 256 input
   TCCR1B=0x04;
@@ -37,6 +42,8 @@ void setup()
   pinMode(ZERO_CROSS_SIGNAL, INPUT_PULLUP);
 
   // Initialze PWM signal output
+  digitalWrite(LIGHT_DIMMER_PWM, LOW);
+  digitalWrite(MAT_DIMMER_PWM, LOW);
   pinMode(LIGHT_DIMMER_PWM, OUTPUT);
   pinMode(MAT_DIMMER_PWM, OUTPUT);
 
@@ -62,14 +69,22 @@ void setup()
 
 // Comparator match A - light dimmer
 ISR(TIMER1_COMPA_vect){
-  // Set TRIAC gate to low
-   digitalWrite(LIGHT_DIMMER_PWM, LOW);
+  // Set TRIAC gate to high
+   digitalWrite(LIGHT_DIMMER_PWM, HIGH);
+   // Delay for TRIAC
+   //delayMicroseconds(20);
+   // Set TRIAC gate to low
+   //digitalWrite(LIGHT_DIMMER_PWM, LOW);
 }
 
 // Comparator match B - mat dimmer
 ISR(TIMER1_COMPB_vect){
+  // Set TRIAC gate to high
+  digitalWrite(MAT_DIMMER_PWM, HIGH);
+  // Delay for TRIAC
+  //delayMicroseconds(20);
   // Set TRIAC gate to low
-  digitalWrite(MAT_DIMMER_PWM, LOW); 
+  //digitalWrite(MAT_DIMMER_PWM, LOW);
 }
 
 // Read three digit serial signal, return parsed int
@@ -84,7 +99,7 @@ int read_three_digits(){
   int dc1 = Serial.read() - '0';
 
   // Add respective multiples and return
-  return (dc100 + dc10 + dc1);
+  return 490-(dc100 + dc10 + dc1);
 }
 
 
